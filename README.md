@@ -1,6 +1,6 @@
 # Intro
 
-This is a POC Django app using Telegram for authentication.
+This is a POC Django app using Telegram for authentication. The idea is that, to login to the django site, you send a message to a bot which running as webhook in the django app. Upon receiving the message, the bot will create new user using Telegram username. The bot will then return a special url that user should open in order to login.
 
 # Quickstart
 
