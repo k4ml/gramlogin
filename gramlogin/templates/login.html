@@ -2,17 +2,24 @@
 {% extends 'base.html' %}
 
 {% block content %}
-{% if message %}
-<b>{{ message }}</b>
-{% endif %}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Login</h3>
+    </div>
+  <div class="panel-body">
+    {% if message %}
+    <b>{{ message }}</b>
+    {% endif %}
 
-{% if auths %}
-<form action='/login/' method='post'>
-    {% csrf_token %}
-    <input type="hidden" name='auths' value="{{ auths }}" />
-    <input type="submit" name="submit" value="Login ?" />
-</form>
-{% else %}
-To login, start a conversation with <a href="https://t.me/gramloginbot?start=login">gramloginbot</a> with your Telegram client.
-{% endif %}
+    {% if auths %}
+    <form action='/login/' method='post'>
+        {% csrf_token %}
+        <input type="hidden" name='auths' value="{{ auths }}" />
+        <input type="submit" name="submit" value="Login as {{ username }} ?" class="btn btn-default" />
+    </form>
+    {% else %}
+    To login, start a conversation with <a href="https://t.me/gramloginbot?start=login">gramloginbot</a> with your Telegram client.
+    {% endif %}
+  </div>
+</div>
 {% endblock %}

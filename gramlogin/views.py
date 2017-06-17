@@ -53,7 +53,8 @@ def login(request):
             auth_login(request, user)
             return redirect(index)
 
-    return render(request, 'login.html', context={'auths': auths})
+    username = auths.split(':')[0]
+    return render(request, 'login.html', context={'auths': auths,'username': username})
 
 @login_required(login_url='/login/')
 def logout(request):

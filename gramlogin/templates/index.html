@@ -1,5 +1,12 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<span>Hello {{ request.user.username }} | <a href="{{ logout_url }}">Logout</a></span>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Dashboard</h3>
+    </div>
+    <div class="panel-body">
+        <span>Hello {{ request.user.username }} | <a href="{{ logout_url }}">Logout</a></span>
+    </div>
+</div>
 {% endblock %}
