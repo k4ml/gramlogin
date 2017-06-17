@@ -1,9 +1,13 @@
 {% if message %}
 <b>{{ message }}</b>
-{% else %}
+{% endif %}
+
+{% if auths %}
 <form action='/login/' method='post'>
     {% csrf_token %}
     <input type="hidden" name='auths' value="{{ auths }}" />
     <input type="submit" name="submit" value="Login ?" />
 </form>
+{% else %}
+To login, start a conversation with <a href="https://t.me/gramloginbot?start=login">gramloginbot</a> with your Telegram client.
 {% endif %}
