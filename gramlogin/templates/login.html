@@ -1,3 +1,7 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
 {% if message %}
 <b>{{ message }}</b>
 {% endif %}
@@ -11,3 +15,4 @@
 {% else %}
 To login, start a conversation with <a href="https://t.me/gramloginbot?start=login">gramloginbot</a> with your Telegram client.
 {% endif %}
+{% endblock %}
