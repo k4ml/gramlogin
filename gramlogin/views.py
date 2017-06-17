@@ -11,12 +11,15 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login as auth_login
 from django.core.signing import TimestampSigner
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout as auth_logout
+from django.core.urlresolvers import reverse
 
 import telegram
 
 BOT_TOKEN = os.environ['BOT_TOKEN']
 BOT_WHTOKEN = os.environ['BOT_WHTOKEN']
 bot = telegram.Bot(token=BOT_TOKEN)
+signer = TimestampSigner()
 
 def build_menu(buttons,
                n_cols,
@@ -31,12 +34,16 @@ def build_menu(buttons,
 
 @login_required(login_url='/login/')
 def index(request):
-    return HttpResponse('hello %s' % request.user.username)
+    auths = signer.sign('logout')
+    context = {
+                'logout_url': reverse('logout') + '?auths=%s' % auths,
+            }
+    return render(request, 'index.html', context)
 
 def login(request):
     auths = request.GET.get('auths', None) or request.POST.get('auths', None)
     if auths is None:
-        return HttpResponseForbidden()
+        return render(request, 'login.html')
 
     if request.method == 'POST':
         user = authenticate(request, auths=auths)
@@ -47,6 +54,17 @@ def login(request):
             return redirect(index)
 
     return render(request, 'login.html', context={'auths': auths})
+
+@login_required(login_url='/login/')
+def logout(request):
+    try:
+        auths = signer.unsign(request.GET.get('auths', ''))
+    except Exception as e:
+        print(e)
+        return redirect(index)
+
+    auth_logout(request)
+    return redirect(login)
 
 @csrf_exempt
 def handle_bot(request, token):
@@ -62,7 +80,6 @@ def handle_bot(request, token):
         username = update.message.chat.username
         first_name = update.message.chat.first_name
         username = username or first_name
-        signer = TimestampSigner()
         auths = signer.sign(username)
         login_url = request.build_absolute_uri('/login/') + '?auths=%s' % auths
         button_list = [
