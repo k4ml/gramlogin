@@ -80,8 +80,11 @@ def handle_bot(request, token):
         print(update.message.chat.id, update.message.chat.username, update.message.text)
         chat_id = update.message.chat.id
         username = update.message.chat.username
-        first_name = update.message.chat.first_name
-        username = username or first_name
+        if not username:
+            tg_faq = 'https://telegram.org/faq#usernames-and-t-me'
+            bot.sendMessage(chat_id=chat_id, text='To login with Telegram, you must create a username. Refer %s for details.' % tg_faq)
+            return HttpResponse()
+
         auths = signer.sign(username)
 
         user, created = User.objects.get_or_create(username=username)
