@@ -12,6 +12,7 @@ from django.contrib.auth import authenticate, login as auth_login
 from django.core.signing import TimestampSigner
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout as auth_logout
+from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 
 import telegram
@@ -82,6 +83,9 @@ def handle_bot(request, token):
         first_name = update.message.chat.first_name
         username = username or first_name
         auths = signer.sign(username)
+
+        user, created = User.objects.get_or_create(username=username)
+
         login_url = request.build_absolute_uri('/login/') + '?auths=%s' % auths
         button_list = [
             telegram.InlineKeyboardButton("Login", url=login_url),

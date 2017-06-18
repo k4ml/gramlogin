@@ -11,7 +11,12 @@ class TelegramBackend(object):
             print(e)
             return None
 
-        user, created = User.objects.get_or_create(username=username)
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            print("%s does not exists" % username)
+            return None
+
         return user
 
     def get_user(self, user_id):
